@@ -1,0 +1,16 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+# 'context-menu':
+#   '.overlayer':
+#       'Enable ruby-bundler': 'ruby-bundler:toggle'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'ruby-bundler'
+      'submenu': [
+        { 'label': 'Bundle Install', 'command': 'ruby-bundler:install' }
+      ]
+    ]
+  }
+]

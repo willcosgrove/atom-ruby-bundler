@@ -1,0 +1,16 @@
+{
+  "name": "ruby-bundler",
+  "main": "./lib/ruby-bundler",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A short description of your package",
+  "activationEvents": ["ruby-bundler:install", "ruby-bundler:list"],
+  "repository": "https://github.com/willcosgrove/atom-ruby-bundler",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2"
+  }
+}
