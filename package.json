@@ -1,7 +1,7 @@
 {
   "name": "ruby-bundler",
   "main": "./lib/ruby-bundler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Control Bundler from Atom",
   "activationEvents": [
