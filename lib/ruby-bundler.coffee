@@ -49,6 +49,3 @@ module.exports =
 
   deactivate: ->
     @rubyBundlerView.destroy()
-
-  serialize: ->
-    rubyBundlerViewState: @rubyBundlerView.serialize()
