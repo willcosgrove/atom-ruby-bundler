@@ -1,11 +1,12 @@
 RubyBundlerView = require './ruby-bundler-view'
 RubyBundlerGemsView = require './ruby-bundler-gems-view'
-exec = require('child_process').exec
+{BufferedProcess} = require 'atom'
 fs = require('fs')
 _ = require('underscore')
 
 module.exports =
   rubyBundlerView: null
+  bufferedProcess: null
 
   activate: (state) ->
     console.log state
@@ -21,31 +22,43 @@ module.exports =
     @rubyBundlerView = new RubyBundlerView(state.rubyBundlerViewState)
     @checkForGemfile =>
       @rubyBundlerView.bundling()
-      exec "cd #{atom.project.getPath()}; bundle", (error, stdout, stderr) =>
-        if error
-          @rubyBundlerView.setOutput(stdout)
-          @rubyBundlerView.error()
-        else
-          @rubyBundlerView.setOutput(stderr)
-          @rubyBundlerView.success()
+
+      command = 'bundle'
+      args = []
+      options =
+        cwd: atom.project.getPath()
+        env: process.env
+      stdout = (output) =>
+        @rubyBundlerView.appendOutput(output)
+      stderr = (output) =>
+        @rubyBundlerView.appendOutput(output)
+      exit = (code) =>
+        if code is 0 then @rubyBundlerView.success() else @rubyBundlerView.error()
+
+      @bufferedProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
     , =>
       @rubyBundlerView.gemfileNotFound()
 
   list: (state) ->
     @rubyBundlerGemsView = new RubyBundlerGemsView()
     @checkForGemfile =>
-      exec "cd #{atom.project.getPath()}; bundle list", (error, stdout, stderr) =>
-        if error
-          #do something about it
-        else
-          gems = _.map stdout.split("\n").slice(1, -1), (gemLine) ->
-            match = gemLine.match(/\s+\* ([\w-\.]+) \((.+)\)/)
-            if match?
-              {name: match[1], version: match[2]}
-            else
-              console.log(gemLine)
-              {}
-          @rubyBundlerGemsView.setGems(gems)
+      command = 'bundle'
+      args = ['list']
+      options =
+        cwd: atom.project.getPath()
+        env: process.env
+      stdout = (output) =>
+        gems = _.map output.split("\n").slice(1, -1), (gemLine) ->
+          match = gemLine.match(/\s+\* ([\w-\.]+) \((.+)\)/)
+          if match?
+            {name: match[1], version: match[2]}
+          else
+            console.log(gemLine)
+        @rubyBundlerGemsView.setGems(gems)
+      stderr = (output) =>
+        # TODO: display error message
+
+      @bufferedProcess = new BufferedProcess({command, args, options, stdout, stderr})
 
   deactivate: ->
     @rubyBundlerView.destroy()
