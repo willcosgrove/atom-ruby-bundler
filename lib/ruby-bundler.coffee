@@ -26,7 +26,7 @@ module.exports =
           @rubyBundlerView.setOutput(stdout)
           @rubyBundlerView.error()
         else
-          @rubyBundlerView.setOutput(stdout)
+          @rubyBundlerView.setOutput(stderr)
           @rubyBundlerView.success()
     , =>
       @rubyBundlerView.gemfileNotFound()
