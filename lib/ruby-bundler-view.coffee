@@ -2,6 +2,8 @@
 
 module.exports =
 class RubyBundlerView extends View
+  output: []
+
   @content: ->
     @div class: 'ruby-bundler overlay from-top', =>
       @div class: 'panel', =>
@@ -42,11 +44,11 @@ class RubyBundlerView extends View
   showMeTheMoney: ->
     console.log 'Viewing output'
     atom.workspace.open().then (editor) =>
-      editor.buffer.append(@output)
+      editor.buffer.append(@output.join("\n"))
       @destroy()
 
-  setOutput: (output) ->
-    @output = output
+  appendOutput: (output) ->
+    @output.push output
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
