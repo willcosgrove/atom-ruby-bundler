@@ -9,7 +9,6 @@ module.exports =
   bufferedProcess: null
 
   activate: (state) ->
-    console.log state
     atom.workspaceView.command "ruby-bundler:install", => @bundle(state)
     atom.workspaceView.command "ruby-bundler:list", => @list(state)
     atom.workspaceView.command "ruby-bundler:close", => @deactivate()
@@ -17,6 +16,12 @@ module.exports =
   checkForGemfile: (success, failure) ->
     fs.exists "#{atom.project.getPath()}/Gemfile", (exists) =>
       if exists then success() else failure()
+
+  checkForAndSetupRbenv: (callback) ->
+    if fs.existsSync "#{process.env.HOME}/.rbenv"
+      exec('eval "$(rbenv init -)"; rbenv rehash', callback())
+    else
+      callback()
 
   bundle: (state) ->
     @rubyBundlerView = new RubyBundlerView(state.rubyBundlerViewState)
@@ -48,13 +53,12 @@ module.exports =
         cwd: atom.project.getPath()
         env: process.env
       stdout = (output) =>
-        gems = _.map output.split("\n").slice(1, -1), (gemLine) ->
+        gems = []
+        _.each output.split("\n"), (gemLine) ->
           match = gemLine.match(/\s+\* ([\w-\.]+) \((.+)\)/)
           if match?
-            {name: match[1], version: match[2]}
-          else
-            console.log(gemLine)
-        @rubyBundlerGemsView.setGems(gems)
+            gems.push({name: match[1], version: match[2]})
+        @rubyBundlerGemsView.addGems(gems)
       stderr = (output) =>
         # TODO: display error message
 

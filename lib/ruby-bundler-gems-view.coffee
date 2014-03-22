@@ -7,9 +7,11 @@ class RubyBundlerGemsView extends SelectListView
     @addClass('overlay from-top')
     atom.workspaceView.append(this)
     @focusFilterEditor()
+    @gems = []
 
-  setGems: (gems) ->
-    @setItems(gems)
+  addGems: (gems) ->
+    @gems = @gems.concat(gems)
+    @setItems(@gems)
     @populateList()
 
   viewForItem: (item) ->
@@ -17,3 +19,8 @@ class RubyBundlerGemsView extends SelectListView
 
   getFilterKey: ->
     "name"
+
+  confirmed: (item) ->
+    # Not sure what this should do
+    atom.workspace.open("#{atom.project.getPath()}/Gemfile")
+    @cancel()
