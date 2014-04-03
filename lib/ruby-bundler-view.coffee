@@ -21,11 +21,12 @@ class RubyBundlerView extends View
     atom.workspaceView.addClass('ruby bundler active')
     this.slideDown(100)
 
-  bundling: ->
+  bundling: (subcommand) ->
+    message = "Bundle #{subcommand}ing..."
     @message.html View.render ->
       @div class: 'block', =>
         @progress class: 'inline-block'
-        @span class: 'inline-block', 'Bundling...'
+        @span class: 'inline-block', message
 
   gemfileNotFound: ->
     @message.html View.render ->

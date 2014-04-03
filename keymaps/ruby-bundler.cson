@@ -9,5 +9,6 @@
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
   'alt-cmd-b': 'ruby-bundler:install'
+  'alt-cmd-B': 'ruby-bundler:update'
 '.workspace.ruby.bundler.active':
   'escape': 'ruby-bundler:close'

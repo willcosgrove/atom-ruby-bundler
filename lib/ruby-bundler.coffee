@@ -9,7 +9,8 @@ module.exports =
   bufferedProcess: null
 
   activate: (state) ->
-    atom.workspaceView.command "ruby-bundler:install", => @bundle(state)
+    atom.workspaceView.command "ruby-bundler:install", => @bundle('install', state)
+    atom.workspaceView.command "ruby-bundler:update", => @bundle('update', state)
     atom.workspaceView.command "ruby-bundler:list", => @list(state)
     atom.workspaceView.command "ruby-bundler:close", => @deactivate()
 
@@ -23,13 +24,13 @@ module.exports =
     else
       callback()
 
-  bundle: (state) ->
+  bundle: (subcommand, state) ->
     @rubyBundlerView = new RubyBundlerView(state.rubyBundlerViewState)
     @checkForGemfile =>
-      @rubyBundlerView.bundling()
+      @rubyBundlerView.bundling(subcommand)
 
       command = 'bundle'
-      args = []
+      args = [subcommand]
       options =
         cwd: atom.project.getPath()
         env: process.env

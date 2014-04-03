@@ -10,6 +10,7 @@
       'label': 'ruby-bundler'
       'submenu': [
         { 'label': 'Bundle Install', 'command': 'ruby-bundler:install' }
+        { 'label': 'Bundle Update', 'command': 'ruby-bundler:update' }
       ]
     ]
   }
