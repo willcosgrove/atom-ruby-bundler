@@ -21,9 +21,7 @@ class RubyBundlerGemsView extends SelectListView
     "name"
 
   confirmed: (item) ->
-    #exec("atom `bundle show #{item.name}`")
-    # Not sure what this should do
-    # atom.open(bundle show #{item.name})
+    # find out full path for gem via bundle show
     command = 'bundle'
     args = ["show",item.name]
     options =
@@ -31,10 +29,11 @@ class RubyBundlerGemsView extends SelectListView
       env: process.env
     stdout = (output) =>
       console.log(output)
+
+      # open up new atom instance from that path
       command = 'atom'
       args = [output]
       options =
-        cwd: atom.project.getPath()
         env: process.env
       stdout = (output) =>
         console.log(output)
@@ -50,6 +49,4 @@ class RubyBundlerGemsView extends SelectListView
     exit = (code) =>
       console.log(code)
 
-    @bufferedProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
-    #atom.workspace.open("#{atom.project.getPath()}/Gemfile")
-    @cancel()
+    new BufferedProcess({command, args, options, stdout, stderr, exit})
