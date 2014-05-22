@@ -50,3 +50,6 @@ class RubyBundlerGemsView extends SelectListView
       console.log(code)
 
     new BufferedProcess({command, args, options, stdout, stderr, exit})
+
+    # clear list view to provide feedback
+    @cancel()
