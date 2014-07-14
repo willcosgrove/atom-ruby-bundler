@@ -28,22 +28,8 @@ class RubyBundlerGemsView extends SelectListView
       cwd: atom.project.getPath()
       env: process.env
     stdout = (output) =>
-      console.log(output)
-
-      # open up new atom instance from that path
-      command = 'atom'
-      args = [output]
-      options =
-        env: process.env
-      stdout = (output) =>
-        console.log(output)
-      stderr = (output) =>
-        console.log(output)
-      exit = (code) =>
-        console.log(code)
-
-      new BufferedProcess({command, args, options, stdout, stderr, exit})
-
+      console.log(path: output)
+      atom.open({pathsToOpen: [output.split("\n").shift()]})
     stderr = (output) =>
       console.log(output)
     exit = (code) =>
