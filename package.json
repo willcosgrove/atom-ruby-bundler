@@ -11,7 +11,7 @@
   "repository": "https://github.com/willcosgrove/atom-ruby-bundler",
   "license": "MIT",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">=0.170.0"
   },
   "dependencies": {
     "underscore": "~1.5.2"
