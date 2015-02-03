@@ -7,7 +7,7 @@
 
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.workspace':
+'.atom-workspace':
   'alt-cmd-b': 'ruby-bundler:install'
-'.workspace.ruby.bundler.active':
+'.atom-workspace.ruby.bundler.active':
   'escape': 'ruby-bundler:close'
