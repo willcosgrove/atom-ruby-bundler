@@ -1,4 +1,4 @@
-{SelectListView} = require 'atom'
+{SelectListView,BufferedProcess} = require 'atom'
 
 module.exports =
 class RubyBundlerGemsView extends SelectListView
@@ -21,6 +21,21 @@ class RubyBundlerGemsView extends SelectListView
     "name"
 
   confirmed: (item) ->
-    # Not sure what this should do
-    atom.workspace.open("#{atom.project.getPath()}/Gemfile")
+    # find out full path for gem via bundle show
+    command = 'bundle'
+    args = ["show",item.name]
+    options =
+      cwd: atom.project.getPath()
+      env: process.env
+    stdout = (output) =>
+      console.log(path: output)
+      atom.open({pathsToOpen: [output.split("\n").shift()]})
+    stderr = (output) =>
+      console.log(output)
+    exit = (code) =>
+      console.log(code)
+
+    new BufferedProcess({command, args, options, stdout, stderr, exit})
+
+    # clear list view to provide feedback
     @cancel()
