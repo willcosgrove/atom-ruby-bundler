@@ -4,10 +4,12 @@
   "version": "0.2.1",
   "private": true,
   "description": "Control Bundler from Atom",
-  "activationEvents": [
-    "ruby-bundler:install",
-    "ruby-bundler:list"
-  ],
+  "activationCommands": {
+    "atom-text-editor": [
+      "ruby-bundler:install",
+      "ruby-bundler:list"
+    ]
+  },
   "repository": "https://github.com/willcosgrove/atom-ruby-bundler",
   "license": "MIT",
   "engines": {
