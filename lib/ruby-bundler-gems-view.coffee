@@ -1,11 +1,12 @@
-{SelectListView} = require 'atom'
+{$, SelectListView} = require 'atom-space-pen-views'
 
 module.exports =
 class RubyBundlerGemsView extends SelectListView
   initialize: ->
     super
     @addClass('overlay from-top')
-    atom.workspaceView.append(this)
+    $(atom.views.getView(atom.workspace)).append(this)
+    $(atom.views.getView(atom.workspace)).addClass('ruby bundler active')
     @focusFilterEditor()
     @gems = []
 

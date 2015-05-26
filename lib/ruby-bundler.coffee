@@ -1,21 +1,31 @@
 RubyBundlerView = require './ruby-bundler-view'
 RubyBundlerGemsView = require './ruby-bundler-gems-view'
-{BufferedProcess} = require 'atom'
+{BufferedProcess, CompositeDisposable} = require 'atom'
 fs = require('fs')
 _ = require('underscore')
 
 module.exports =
   rubyBundlerView: null
+  rubyBundlerGemsView: null
   bufferedProcess: null
+  subscriptions: null
 
   activate: (state) ->
-    atom.workspaceView.command "ruby-bundler:install", => @bundle(state)
-    atom.workspaceView.command "ruby-bundler:list", => @list(state)
-    atom.workspaceView.command "ruby-bundler:close", => @deactivate()
+    @subscriptions = new CompositeDisposable
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      "ruby-bundler:install": => @bundle(state)
+      "ruby-bundler:close": => @deactivate()
+      #"ruby-bundler:list": => @list(state)
 
   checkForGemfile: (success, failure) ->
-    fs.exists "#{atom.project.getPath()}/Gemfile", (exists) =>
-      if exists then success() else failure()
+    gemfileFound = false
+    for path in atom.project.getPaths()
+      unless gemfileFound
+        fs.exists "#{path}/Gemfile", (exists) =>
+          if exists
+            gemfileFound = true
+            success(path)
+    failure() unless gemfileFound
 
   checkForAndSetupRbenv: (callback) ->
     if fs.existsSync "#{process.env.HOME}/.rbenv"
@@ -25,13 +35,13 @@ module.exports =
 
   bundle: (state) ->
     @rubyBundlerView = new RubyBundlerView(state.rubyBundlerViewState)
-    @checkForGemfile =>
+    @checkForGemfile (path) =>
       @rubyBundlerView.bundling()
 
       command = 'bundle'
       args = []
       options =
-        cwd: atom.project.getPath()
+        cwd: path
         env: process.env
       stdout = (output) =>
         @rubyBundlerView.appendOutput(output)
@@ -46,11 +56,11 @@ module.exports =
 
   list: (state) ->
     @rubyBundlerGemsView = new RubyBundlerGemsView()
-    @checkForGemfile =>
+    @checkForGemfile (path) =>
       command = 'bundle'
       args = ['list']
       options =
-        cwd: atom.project.getPath()
+        cwd: path
         env: process.env
       stdout = (output) =>
         gems = []
@@ -61,8 +71,11 @@ module.exports =
         @rubyBundlerGemsView.addGems(gems)
       stderr = (output) =>
         # TODO: display error message
-
       @bufferedProcess = new BufferedProcess({command, args, options, stdout, stderr})
+    , =>
+      @rubyBundlerGemsView.setError("No Gemfile found")
+
 
   deactivate: ->
-    @rubyBundlerView.destroy()
+    @rubyBundlerView?.destroy()
+    @rubyBundlerGemsView?.cancel()

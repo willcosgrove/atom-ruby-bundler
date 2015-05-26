@@ -1,4 +1,4 @@
-{View} = require 'atom'
+{$, View} = require 'atom-space-pen-views'
 
 module.exports =
 class RubyBundlerView extends View
@@ -17,8 +17,8 @@ class RubyBundlerView extends View
     @on 'click', '.see-output', => @showMeTheMoney()
     @on 'click', '.close', => @destroy()
     this.hide()
-    atom.workspaceView.append(this)
-    atom.workspaceView.addClass('ruby bundler active')
+    $(atom.views.getView(atom.workspace)).append(this)
+    $(atom.views.getView(atom.workspace)).addClass('ruby bundler active')
     this.slideDown(100)
 
   bundling: ->
@@ -55,5 +55,5 @@ class RubyBundlerView extends View
 
   # Tear down any state and detach
   destroy: ->
-    atom.workspaceView.removeClass('ruby bundler active')
+    $(atom.views.getView(atom.workspace)).removeClass('ruby bundler active')
     @detach()
