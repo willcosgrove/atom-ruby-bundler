@@ -1,11 +1,14 @@
 {
   "name": "ruby-bundler",
   "main": "./lib/ruby-bundler",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "description": "Control Bundler from Atom",
   "activationCommands": {
-    "atom-workspace": ["ruby-bundler:install", "ruby-bundler:close"]
+    "atom-workspace": [
+      "ruby-bundler:install",
+      "ruby-bundler:close"
+    ]
   },
   "repository": "https://github.com/willcosgrove/atom-ruby-bundler",
   "license": "MIT",
