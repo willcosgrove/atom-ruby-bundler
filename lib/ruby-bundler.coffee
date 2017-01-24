@@ -20,11 +20,10 @@ module.exports =
   checkForGemfile: (success, failure) ->
     gemfileFound = false
     for path in atom.project.getPaths()
-      unless gemfileFound
-        fs.exists "#{path}/Gemfile", (exists) =>
-          if exists
-            gemfileFound = true
-            success(path)
+      if fs.existsSync(path)
+        gemfileFound = true
+        success(path)
+        return path
     failure() unless gemfileFound
 
   checkForAndSetupRbenv: (callback) ->
